@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>WebSocket demo</title>
+</head>
+
+<body>
+    <script>
+        function createGuid() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+        function getTestMsg() {
+            return JSON.stringify({
+                "id": createGuid(),
+                "type": "DEBUG_MESSAGE",
+                "verse": "lorem ipsum",
+                "verseId": createGuid()
+            })
+        }
+
+        function getRegularMsg() {
+            var tmp = JSON.parse(getTestMsg());
+            tmp.type = "REGULAR";
+            return JSON.stringify(tmp)
+        }
+
+        var ws = new WebSocket("ws://127.0.0.1:8765/");
+
+        ws.onmessage = function (event) {
+            var list = document.getElementById("received-msgs"),
+                new_item = document.createElement('li');
+            try {
+                var data = JSON.parse(event.data);
+                if (data.type === "REGULAR") {
+                    if (data.data != undefined && Object.keys(data.data).indexOf("verse") > -1 && data.type == "REGULAR") {
+                        new_item.appendChild(document.createTextNode(data.data.verse));
+                        console.log(event)
+                        list.appendChild(new_item);
+                    }
+                } else {
+                    console.log(data)
+                }
+
+            } catch (error) {
+                console.error(error);
+            }
+        };
+    </script>
+    <p>
+        <h1>Lyrics Display</h1>
+    </p>
+    <ul id="received-msgs"></ul>
+</body>
+
+</html>

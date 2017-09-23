@@ -1,0 +1,21 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "title": "Message",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "string"
+        },
+        "type": {
+            "type": "string",
+            "enum": [
+                "DEBUG_MESSAGE",
+                "REGULAR"
+            ]
+        }
+    },
+    "required": [
+        "id",
+        "type"
+    ]
+}
